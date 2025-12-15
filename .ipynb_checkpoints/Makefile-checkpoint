@@ -3,7 +3,6 @@ default: all
 all:
 	# "building city data reader example"
 	g++ -O -Wall -o datareader datareader.cpp
-	g++ -O3 -std=c++17 -Wall -Wextra -o sales sales.cpp
 
 clean:
-	rm -f datareader sales *~ *png
+	rm -f datareader *~ *png

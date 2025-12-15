@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 
 def load_xy(filename):
+    """Load only first two columns, skipping lines beginning with '#'."""
     data = []
     with open(filename) as f:
         for line in f:
@@ -15,6 +16,7 @@ def load_xy(filename):
     return np.array(data)
 
 def load_polygons(filename):
+    """Load longitude/latitude polygons separated by blank lines."""
     polygons = []
     current = []
 
@@ -42,7 +44,7 @@ def load_polygons(filename):
     return polygons
 
 
-def make_plot(infile,optfile=None,region="NA",out_file=None,annotate_text=None,show_plot=True):
+def make_plot(infile,optfile=None,region="NA"):
     '''
     infile: (required) a list of cities
     outfile: a list of cities ordered for optimized route
@@ -92,29 +94,16 @@ def make_plot(infile,optfile=None,region="NA",out_file=None,annotate_text=None,s
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    if annotate_text:
-        ax.text(0.02, 0.98,
-                annotate_text,
-                transform=ax.transAxes,
-                va='top',
-                ha='left',
-                fontsize=10,
-                bbox=dict(boxstyle='round', facecolor='white', alpha=0.85))
-
     # Save plot
-    if out_file:
-        plotfile = out_file
-    else:
-        plotfile = infile.split('.')[0] + '.pdf'
+    plotfile=infile.split('.')[0]+'.pdf'
     plt.savefig(plotfile, format='pdf', facecolor='white')
 
-    if show_plot:
-        print('close plot or "^C" to exit')
-        try:
-            plt.show()
-        except KeyboardInterrupt:
-            print("Interrupted with Ctrl-C, closing plot and exiting...")
-            plt.close('all')
+    print('close plot or "^C" to exit')
+    try:
+        plt.show()
+    except KeyboardInterrupt:
+        print("Interrupted with Ctrl-C, closing plot and exiting...")
+        plt.close('all')
 
 
 def usage():
@@ -123,12 +112,10 @@ def usage():
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='route plotter')
-    parser.add_argument('paths', nargs='*')
-    parser.add_argument("-w", action='store_true')
-    parser.add_argument("--out", default=None)
-    parser.add_argument("--initial_km", type=float, default=None)
-    parser.add_argument("--final_km", type=float, default=None)
-    parser.add_argument("--no_show", action='store_true')
+    parser.add_argument('paths', nargs='*',
+                        help='''paths to plot: original [optimized]''')
+    parser.add_argument("-w", action='store_true',
+                        help="plo the whole world, default in North America only")
     args = parser.parse_args()
     if len(args.paths)<1:
         print ("at least one input file needed")
@@ -139,14 +126,7 @@ if __name__ == '__main__':
     if len(args.paths)>1:cities2= args.paths[1]
     if args.w: region="World"
     else: region="NA"
+    make_plot(cities,cities2,region)
 
-    annotate_text = None
-    if args.initial_km is not None and args.final_km is not None:
-        annotate_text = f"Initial: {args.initial_km:.2f} km\nFinal:   {args.final_km:.2f} km"
 
-    make_plot(cities,
-              cities2,
-              region,
-              out_file=args.out,
-              annotate_text=annotate_text,
-              show_plot=not args.no_show)
+
