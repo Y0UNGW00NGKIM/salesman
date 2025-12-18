@@ -18,16 +18,16 @@ NA = North America, World = Mercator projection of the whole earth
 
 File      Initial     Final       Runtime
 cities150 334030.3458 48236.92902 0.137502895
-cities1k 2769310.102 132665.0757 0.721354195
-cities2k 12003328.79 469594.6222 1.743913952
+cities1k 2769310.102 97926.97885 3.829816507
+cities2k 12003328.79 287548.5684 12.33993469
 
 How to Run:
 make clean
 make
 
-./sales -i cities150.dat --sweeps 60 --melt 20 --max_seg 200
-./sales -i cities1k.dat --sweeps 30 --melt 20 --max_seg 200
-./sales -i cities2k.dat --sweeps 25 --melt 20 --max_seg 200
+./sales -i cities150.dat --sweeps 60 --melt 20 --max_seg 200 --> Didn't see much improvement in higher settings 
+./sales -i cities1k.dat --sweeps 150 --melt 50 --max_seg 1200
+./sales -i cities2k.dat --sweeps 150 --melt 50 --max_seg 1200
 
 For plots:
 python3 routeplot.py cities2k_init.dat cities2k_opt.dat -w --out cities2k.pdf  --initial_km 12003328.79 --final_km 469594.6222 --no_show
